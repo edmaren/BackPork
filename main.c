@@ -287,7 +287,6 @@ static void cleanup_game(pid_t pid, const char *sandbox_id, char *fake_mount_pat
     snprintf(sandbox_dir, sizeof(sandbox_dir), "/mnt/sandbox/%s", sandbox_id);
     printf("[INFO] Removing directory %s\n", sandbox_dir);
     if (cleanup_directory(sandbox_dir) == 0) {
-		notify("Directory removed successfully.");
         printf("[INFO] Directory removed successfully\n");
     } else {
         printf("[WARNING] Failed to remove directory: %s\n", strerror(errno));
@@ -323,8 +322,6 @@ static void patch_game(pid_t child_pid, const char *title_id) {
         printf("[WARNING] Failed to find random folder for %s\n", title_id);
         return;
     }
-
-	notify("Detected game %s. Patching...", title_id);
     printf("[INFO] Detected game %s (pid %d) in sandbox %s. Patching...\n", title_id, child_pid, sandbox_id);
 
     char src_path[PATH_MAX];
@@ -333,7 +330,6 @@ static void patch_game(pid_t child_pid, const char *title_id) {
     char* fake_mount_path = mount_fakelibs(sandbox_id, src_path, child_pid, random_folder);
 
     if (fake_mount_path) {
-		notify("Patch successful. Waiting for game to exit...");
         printf("[INFO] Patch successful. Waiting for game to exit...\n");
         wait_for_pid_exit(child_pid);
         cleanup_game(child_pid, sandbox_id, fake_mount_path);
